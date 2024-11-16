@@ -1,0 +1,37 @@
+namespace: employees-namespace
+
+serviceAccount:
+  create: true  # Imposta su true per creare la ServiceAccount, false se ne usi una esistente
+  name: ""      # Nome della ServiceAccount, lascia vuoto per usare il nome generato automaticamente
+
+database:
+  url: "jdbc:mysql://192.168.0.163:3306/employees"
+  username: "root"           # Nome utente del database
+  password: "root"        # Password del database
+
+backend:
+  image: "employees-app:latest"
+  replicas: 2
+  containerPort: 8080
+
+frontend:
+  image: "employees-frontend:latest"
+  replicas: 1
+  containerPort: 80
+
+redis:
+  image: "redis:latest"
+  containerPort: 6379
+  host: "192.168.0.163"
+  allowEmptyPassword: "yes"
+  databases: "16"
+
+ingress:
+  hosts:
+    - host: "my-app.local"
+      paths:
+        - path: /
+        - path: /api
+
+autoscaling:
+  enabled: false

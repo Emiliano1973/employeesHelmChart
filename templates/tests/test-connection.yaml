@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ .Release.Name }}-test-connection"
+  namespace: "{{ .Values.namespace }}"
+spec:
+  containers:
+    - name: curl
+      image: curlimages/curl:7.73.0
+      command: ['curl', 'http://{{ index .Values.ingress.hosts 0 }}:8080/services']

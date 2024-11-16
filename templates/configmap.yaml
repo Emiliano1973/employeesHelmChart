@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Release.Name }}
+data:
+  DATABASE_URL: "{{ .Values.database.url }}"
+  app.properties: |
+    logging.level=DEBUG
+    server.port={{ .Values.backend.containerPort }}
