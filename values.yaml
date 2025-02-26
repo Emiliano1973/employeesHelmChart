@@ -1,18 +1,31 @@
 namespace: employees-namespace
-
+roleName: pod-reader
+roleBindingName: pod-reader-binding
 serviceAccount:
   create: true  # Imposta su true per creare la ServiceAccount, false se ne usi una esistente
   name: ""      # Nome della ServiceAccount, lascia vuoto per usare il nome generato automaticamente
 
 database:
-  url: "jdbc:mysql://192.168.0.163:3306/employees"
+  url: "jdbc:mysql://host.docker.internal:3306/employees"
   username: "root"           # Nome utente del database
   password: "root"        # Password del database
+
+databaseUsers:
+  url: "jdbc:mysql://host.docker.internal:3306/users"
+  username: "root"           # Nome utente del database
+  password: "root"        # Password del database
+
 
 backend:
   image: "employees-app:latest"
   replicas: 2
   containerPort: 8080
+
+backendUser:
+  image: "users-service:latest"
+  replicas: 2
+  containerPort: 9191
+
 
 frontend:
   image: "employees-frontend:latest"
@@ -22,9 +35,10 @@ frontend:
 redis:
   image: "redis:latest"
   containerPort: 6379
-  host: "192.168.0.163"
+  host: "{{ .Release.Name }}-redis.employees-namespace.svc.cluster.local"
   allowEmptyPassword: "yes"
   databases: "16"
+  tlsEnabled: true
 
 ingress:
   hosts:
